@@ -1,16 +1,16 @@
 modules:
   jira:globalPage:
-    - key: my-app-hello-world-page
+    - key: test-app
       resource: main
       resolver:
         function: resolver
-      title: my-app
+      title: test-app
   function:
     - key: resolver
       handler: index.handler
 resources:
   - key: main
-    path: static/hello-world/build
+    path: static/test-app/build
     tunnel:
       port: 3000
 app:
