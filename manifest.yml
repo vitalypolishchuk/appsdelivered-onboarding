@@ -1,0 +1,30 @@
+modules:
+  jira:globalPage:
+    - key: my-app-hello-world-page
+      resource: main
+      resolver:
+        function: resolver
+      title: my-app
+  function:
+    - key: resolver
+      handler: index.handler
+resources:
+  - key: main
+    path: static/hello-world/build
+    tunnel:
+      port: 3000
+app:
+  id: ari:cloud:ecosystem::app/749f3519-f0a3-4f83-939b-6f06f5d0d44e
+permissions:
+  content:
+    styles:
+      - unsafe-inline
+  scopes:
+    - read:jira-work
+    - read:jira-user
+    - read:issue-event:jira
+    - write:issue:jira
+    - write:comment:jira
+    - write:comment.property:jira
+    - write:attachment:jira
+    - read:issue:jira
