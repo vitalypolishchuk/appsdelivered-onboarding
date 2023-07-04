@@ -12,6 +12,7 @@
     "@atlaskit/eslint-plugin-design-system": "^7.0.1",
     "@atlaskit/form": "^8.11.8",
     "@atlaskit/stylelint-design-system": "^0.5.0",
+    "@atlaskit/textfield": "^5.5.2",
     "@atlaskit/tokens": "^1.10.1",
     "@forge/api": "^2.18.1",
     "@forge/bridge": "^2.6.0",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@svgr/webpack": "^8.0.1",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
     "@typescript-eslint/eslint-plugin": "^5.60.1",

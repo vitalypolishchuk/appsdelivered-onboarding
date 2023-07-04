@@ -1,12 +1,23 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: inherit;
+  box-sizing: border-box;
   font-family: sans-serif;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
 img {
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
 }
