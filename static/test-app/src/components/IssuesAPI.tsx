@@ -1,14 +1,47 @@
 import styles from "../styles/IssuesAPI.module.css";
 import React, { useEffect, useState } from "react";
 import { requestJira } from "@forge/bridge";
-import Avatar from "@atlaskit/avatar";
-import Comment from "@atlaskit/comment";
-import { newIssue, issueType } from "../issueData";
+
+type newIssueType = {
+  fields: {
+    project: {
+      key: string;
+    };
+    summary: string;
+    description: string;
+    issuetype: {
+      name: string;
+    };
+  };
+};
+
+type issueType = {
+  summary: string;
+  description: string;
+  iconUrl: string;
+  key: string;
+};
+
+const newIssue: newIssueType = {
+  fields: {
+    project: {
+      key: "",
+    },
+    summary: "",
+    description: "",
+    issuetype: {
+      name: "Bug",
+    },
+  },
+};
 
 const IssuesAPI = () => {
   const [issues, setIssues] = useState<null | issueType[]>(null);
   const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
+  const [type, setType] = useState("Bug");
+
+  const [createIssueLoader, setCreateIssueLoader] = useState(false);
 
   const getIssues = async () => {
     try {
@@ -30,9 +63,12 @@ const IssuesAPI = () => {
 
   const onSubmitIssue = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (createIssueLoader) return;
+    setCreateIssueLoader(true);
 
     newIssue.fields.summary = summary;
     newIssue.fields.description = description;
+    newIssue.fields.issuetype.name = type;
 
     try {
       const metaResponse = await requestJira(`/rest/api/2/issue/createmeta`);
@@ -46,13 +82,13 @@ const IssuesAPI = () => {
         },
         body: JSON.stringify(newIssue),
       });
-
-      setSummary("");
-      setDescription("");
-
       getIssues();
     } catch (err) {
       console.error(err);
+    } finally {
+      setSummary("");
+      setDescription("");
+      setCreateIssueLoader(false);
     }
   };
 
@@ -62,37 +98,60 @@ const IssuesAPI = () => {
 
   return (
     <>
+      <form onSubmit={onSubmitIssue} className={styles.issue__form}>
+        <h3 className={styles.issue__header}>Create new Issue</h3>
+        <div className={styles.input__container}>
+          <label htmlFor="summary">Summary</label>
+          <input
+            className={styles.issue__input}
+            type="text"
+            name="summary"
+            id="summary"
+            value={summary}
+            onChange={(e) => setSummary(e.target.value)}
+            required
+          />
+        </div>
+        <div className={styles.input__container}>
+          <label htmlFor="description">Description</label>
+          <input
+            className={styles.issue__input}
+            type="text"
+            name="description"
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
+        </div>
+        <div className={styles.input__container}>
+          <label className={styles.label}>Type: </label>
+          <select className={styles.select} value={type} onChange={(e) => setType(e.target.value)}>
+            <option value="Bug">Bug</option>
+            <option value="Epic">Epic</option>
+            <option value="Story">Story</option>
+            <option value="Task">Task</option>
+          </select>
+        </div>
+        <button className={`${styles.issue__button} ${styles.button__add}  ${createIssueLoader ? styles.button__loading : ""}`} type="submit">
+          <span className={createIssueLoader ? styles.hidden : ""}>Create Issue</span>
+        </button>
+      </form>
       {issues !== null && !!issues.length && (
-        <div className={styles.container}>
+        <ul className={styles.container}>
           {issues.map((issue) => {
             return (
-              <div key={issue.key}>
-                <Comment
-                  avatar={<Avatar name="issue" src={issue.iconUrl} />}
-                  content={
-                    <span>
-                      <p>Summary: {issue.summary}</p>
-                      <p>Description: {issue.description}</p>
-                    </span>
-                  }
-                />
-              </div>
+              <li className={styles.issue} key={issue.key}>
+                <img className={styles.issue__img} src={issue.iconUrl} />
+                <span>
+                  <p>Summary: {issue.summary}</p>
+                  <p>Description: {issue.description}</p>
+                </span>
+              </li>
             );
           })}
-        </div>
+        </ul>
       )}
-      <form onSubmit={onSubmitIssue}>
-        <h3>Create new Issue</h3>
-        <div>
-          <label htmlFor="summary">Summary</label>
-          <input type="text" name="summary" id="summary" value={summary} onChange={(e) => setSummary(e.target.value)} required />
-        </div>
-        <div>
-          <label htmlFor="description">Description</label>
-          <input type="text" name="description" id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
-        </div>
-        <button type="submit">Add New Issue</button>
-      </form>
     </>
   );
 };

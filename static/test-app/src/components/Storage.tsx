@@ -109,52 +109,14 @@ const Storage = () => {
 
   return (
     <section className={styles.main__container}>
-      <ul>
-        {issues.map(({ summary, description, type, id }: issueType) => {
-          return (
-            <li className={styles.issue} key={id}>
-              <span className={`${styles.issueInfo} ${edit === id ? styles.none : ""}`}>
-                <p className={styles.text}>Summary: {summary}</p>
-                <p className={styles.text}>Description: {description}</p>
-                <p className={styles.issueType}>Type: {type}</p>
-              </span>
-              <span className={`${styles.issue__inputs} ${edit === id ? "" : styles.none}`}>
-                <input className={styles.input} type="text" value={updatedSummary} onChange={(e) => setUpdatedSummary(e.target.value)} />
-                <input className={styles.input} type="text" value={updatedDescription} onChange={(e) => setUpdatedDescription(e.target.value)} />
-                <select className={styles.select} value={updatedType} onChange={(e) => setUpdatedType(e.target.value)}>
-                  <option value="bug">Bug</option>
-                  <option value="epic">Epic</option>
-                  <option value="story">Story</option>
-                  <option value="task">Task</option>
-                </select>
-              </span>
-              <span className={`${edit === id ? styles.none : ""} ${styles.buttons}`}>
-                <button className={styles.button} onClick={() => handleEdit({ id, summary, description, type })}>
-                  Edit
-                </button>
-                <button className={`${styles.button} ${deleteIssueLoader === id ? styles.button__loading : ""}`} onClick={() => handleDelete(id)}>
-                  <span className={deleteIssueLoader === id ? styles.none : ""}>Delete</span>
-                </button>
-              </span>
-              <span>
-                <button
-                  className={`${styles.button} ${edit === id ? "" : styles.none} ${updateIssueLoader ? styles.button__loading : ""}`}
-                  onClick={() => handleUpdate(id)}
-                >
-                  <span className={updateIssueLoader ? styles.none : ""}>Update</span>
-                </button>
-              </span>
-            </li>
-          );
-        })}
-      </ul>
       <form onSubmit={onIssueSubmit} className={styles.newIssue__form}>
+        <h3 className={styles.issue__header}>Create new Issue</h3>
         <div className={styles.input__container}>
-          <label className={styles.label} htmlFor="summary">
+          <label className={styles.issue__label} htmlFor="summary">
             Summary:
           </label>
           <input
-            className={styles.input}
+            className={styles.issue__input}
             type="text"
             name="summary"
             id="summary"
@@ -164,11 +126,11 @@ const Storage = () => {
           />
         </div>
         <div className={styles.input__container}>
-          <label className={styles.label} htmlFor="description">
+          <label className={styles.issue__label} htmlFor="description">
             Description:
           </label>
           <input
-            className={styles.input}
+            className={styles.issue__input}
             type="text"
             name="description"
             id="description"
@@ -178,18 +140,65 @@ const Storage = () => {
           />
         </div>
         <div className={styles.input__container}>
-          <label className={styles.label}>Type: </label>
-          <select className={styles.select} value={type} onChange={(e) => setType(e.target.value)}>
+          <label className={styles.issue__label}>Type: </label>
+          <select className={styles.select__issue} value={type} onChange={(e) => setType(e.target.value)}>
             <option value="Bug">Bug</option>
             <option value="Epic">Epic</option>
             <option value="Story">Story</option>
             <option value="Task">Task</option>
           </select>
         </div>
-        <button className={`${styles.newIssue__button} ${styles.button} ${createIssueLoader ? styles.button__loading : ""}`}>
-          <span className={createIssueLoader ? styles.none : ""}>Add Issue</span>
+        <button className={`${styles.newIssue__button} ${styles.issue__button} ${createIssueLoader ? styles.button__loading : ""}`}>
+          <span className={createIssueLoader ? styles.hidden : ""}>Create Issue</span>
         </button>
       </form>
+      <ul>
+        {issues.map(({ summary, description, type, id }: issueType) => {
+          return (
+            <li className={styles.issue} key={id}>
+              <span className={`${styles.issue__info} ${edit === id ? styles.none : ""}`}>
+                <p className={styles.issue__text}>Summary: {summary}</p>
+                <p className={styles.issue__text}>Description: {description}</p>
+                <p className={styles.issueType}>Type: {type}</p>
+              </span>
+              <span className={`${styles.issue__inputs} ${edit === id ? "" : styles.none}`}>
+                <input className={styles.issue__input} type="text" value={updatedSummary} onChange={(e) => setUpdatedSummary(e.target.value)} />
+                <input
+                  className={styles.issue__input}
+                  type="text"
+                  value={updatedDescription}
+                  onChange={(e) => setUpdatedDescription(e.target.value)}
+                />
+                <select className={styles.select__issue} value={updatedType} onChange={(e) => setUpdatedType(e.target.value)}>
+                  <option value="Bug">Bug</option>
+                  <option value="Epic">Epic</option>
+                  <option value="Story">Story</option>
+                  <option value="Task">Task</option>
+                </select>
+              </span>
+              <span className={`${edit === id ? styles.none : ""} ${styles.issue__buttons}`}>
+                <button className={styles.issue__button} onClick={() => handleEdit({ id, summary, description, type })}>
+                  Edit
+                </button>
+                <button
+                  className={`${styles.issue__button} ${deleteIssueLoader === id ? styles.button__loading : ""}`}
+                  onClick={() => handleDelete(id)}
+                >
+                  <span className={deleteIssueLoader === id ? styles.hidden : ""}>Delete</span>
+                </button>
+              </span>
+              <span>
+                <button
+                  className={`${styles.issue__button} ${edit === id ? "" : styles.none} ${updateIssueLoader ? styles.button__loading : ""}`}
+                  onClick={() => handleUpdate(id)}
+                >
+                  <span className={updateIssueLoader ? styles.hidden : ""}>Update</span>
+                </button>
+              </span>
+            </li>
+          );
+        })}
+      </ul>
     </section>
   );
 };

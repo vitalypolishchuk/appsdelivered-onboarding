@@ -13,30 +13,25 @@
 }
 
 .issue * {
-  margin: 0.2rem;
+  margin: 0.2rem 0;
 }
 
-.issueInfo {
-  margin-right: 2rem;
-}
-
-.buttons {
+.issue__buttons {
   display: flex;
   gap: 1rem;
 }
 
-.button {
+.issue__button {
   position: relative;
   cursor: pointer;
   background-color: #f4f5f7;
   border: none;
   padding: 0.5rem 1.5rem;
   min-height: 30px;
-  min-width: 60px;
   border-radius: 4px;
 }
 
-.button:hover {
+.issue__button:hover {
   filter: brightness(97%);
 }
 
@@ -62,12 +57,12 @@
   gap: 0.5rem;
 }
 
-.text {
+.issue__text {
   max-width: 150px;
   word-wrap: break-word;
 }
 
-.input {
+.issue__input {
   width: 250px;
   padding: 0.5rem;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -82,6 +77,11 @@
   border-radius: 10px;
 }
 
+.issue__header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
 .input__container {
   display: flex;
   align-items: center;
@@ -89,11 +89,11 @@
   margin-bottom: 1rem;
 }
 
-.label {
+.issue__label {
   margin-right: 1rem;
 }
 
-.select {
+.select__issue {
   width: 250px;
   padding: 0.2rem;
 }
@@ -104,6 +104,10 @@
 
 .none {
   display: none !important;
+}
+
+.hidden {
+  visibility: hidden !important;
 }
 
 @keyframes button-loading-spinner {

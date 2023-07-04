@@ -1,0 +1,23 @@
+.buttons {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.button {
+  position: relative;
+  cursor: pointer;
+  background-color: #f4f5f7;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  min-height: 30px;
+  border-radius: 4px;
+}
+
+.button:hover {
+  filter: brightness(97%);
+}
+
+.button__selected {
+  filter: brightness(97%);
+}
