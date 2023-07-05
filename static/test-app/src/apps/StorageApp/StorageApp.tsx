@@ -1,16 +1,12 @@
-import styles from "../styles/Storage.module.css";
+import styles from "./Storage.module.css";
 import React, { useEffect, useState } from "react";
 import { invoke } from "@forge/bridge";
-
-type issueType = {
-  summary: string;
-  description: string;
-  type: string;
-  id: string;
-};
+import { issueType, storeType } from "./store/storeTypes";
+import store from "./store/store";
 
 const Storage = () => {
-  const [issues, setIssues] = useState<issueType[]>([]);
+  const { issues, setIssues, deleteIssue, updateIssue, addIssue } = store((state: unknown) => state as storeType);
+  const [recievedIssuesFromStorage, setRecievedIssuesFromStorage] = useState(false);
 
   const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
@@ -21,9 +17,7 @@ const Storage = () => {
   const [updatedDescription, setUpdatedDescription] = useState("");
   const [updatedType, setUpdatedType] = useState("");
 
-  const [updateIssueLoader, setUpdateIssueLoader] = useState(false);
-  const [createIssueLoader, setCreateIssueLoader] = useState(false);
-  const [deleteIssueLoader, setDeleteIssueLoader] = useState("");
+  const [createIssueLoader, setCreateIssueLoader] = useState(true);
 
   const getIssuesFromStorage = async () => {
     const newIssues: issueType[] = await invoke("getIssues");
@@ -35,28 +29,26 @@ const Storage = () => {
   };
 
   useEffect(() => {
-    const getIssues = async () => {
-      const newIssues: issueType[] = await getIssuesFromStorage();
-      setIssues(newIssues);
-    };
-    getIssues();
-  }, []);
+    if (!recievedIssuesFromStorage) {
+      const getIssues = async () => {
+        const newIssues: issueType[] = await getIssuesFromStorage();
+        setRecievedIssuesFromStorage(true);
+        setIssues(newIssues);
+        setCreateIssueLoader(false);
+      };
+      getIssues();
+      return;
+    }
+
+    setIssuesInStorage(issues);
+  }, [issues]);
 
   const handleDelete = async (id: string) => {
-    if (updateIssueLoader || createIssueLoader || deleteIssueLoader) return;
-    setDeleteIssueLoader(id);
-
-    const newIssues: issueType[] = await getIssuesFromStorage();
-    const filteredIssues = newIssues.filter((issue) => issue.id !== id);
-    setIssuesInStorage(filteredIssues);
-    setIssues(filteredIssues);
-    setDeleteIssueLoader("");
+    deleteIssue(id);
   };
 
   const handleUpdate = async (id: string) => {
     if (!updatedSummary || !updatedDescription) return;
-    if (updateIssueLoader || createIssueLoader || deleteIssueLoader) return;
-    setUpdateIssueLoader(true);
 
     const updatedIssue = {
       summary: updatedSummary,
@@ -64,20 +56,12 @@ const Storage = () => {
       type: updatedType,
       id: id,
     };
-    const newIssues: issueType[] = await getIssuesFromStorage();
-    const updatedIssues = newIssues.map((issue: issueType) => {
-      if (id === issue.id) return updatedIssue;
-      return issue;
-    });
-    setIssuesInStorage(updatedIssues);
-    setIssues(updatedIssues);
 
-    setUpdateIssueLoader(false);
+    updateIssue(updatedIssue);
     setEdit("");
   };
 
   const handleEdit = (issue: issueType) => {
-    if (updateIssueLoader || deleteIssueLoader) return;
     setEdit(issue.id);
     setUpdatedSummary(issue.summary);
     setUpdatedDescription(issue.description);
@@ -87,9 +71,6 @@ const Storage = () => {
   const onIssueSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (updateIssueLoader || createIssueLoader || deleteIssueLoader) return;
-    setCreateIssueLoader(true);
-
     const newIssue = {
       summary: summary,
       description: description,
@@ -97,14 +78,10 @@ const Storage = () => {
       id: new Date().valueOf().toString(),
     };
 
-    const newIssues: issueType[] = await getIssuesFromStorage();
-    newIssues.push(newIssue);
-    setIssuesInStorage(newIssues);
-
-    setIssues(newIssues);
     setSummary("");
     setDescription("");
-    setCreateIssueLoader(false);
+
+    addIssue(newIssue);
   };
 
   return (
@@ -153,13 +130,13 @@ const Storage = () => {
         </button>
       </form>
       <ul>
-        {issues.map(({ summary, description, type, id }: issueType) => {
+        {[...issues].reverse().map(({ summary, description, type, id }: issueType) => {
           return (
             <li className={styles.issue} key={id}>
               <span className={`${styles.issue__info} ${edit === id ? styles.none : ""}`}>
                 <p className={styles.issue__text}>Summary: {summary}</p>
                 <p className={styles.issue__text}>Description: {description}</p>
-                <p className={styles.issueType}>Type: {type}</p>
+                <p className={styles.issue__text}>Type: {type}</p>
               </span>
               <span className={`${styles.issue__inputs} ${edit === id ? "" : styles.none}`}>
                 <input className={styles.issue__input} type="text" value={updatedSummary} onChange={(e) => setUpdatedSummary(e.target.value)} />
@@ -180,19 +157,13 @@ const Storage = () => {
                 <button className={styles.issue__button} onClick={() => handleEdit({ id, summary, description, type })}>
                   Edit
                 </button>
-                <button
-                  className={`${styles.issue__button} ${deleteIssueLoader === id ? styles.button__loading : ""}`}
-                  onClick={() => handleDelete(id)}
-                >
-                  <span className={deleteIssueLoader === id ? styles.hidden : ""}>Delete</span>
+                <button className={styles.issue__button} onClick={() => handleDelete(id)}>
+                  Delete
                 </button>
               </span>
               <span>
-                <button
-                  className={`${styles.issue__button} ${edit === id ? "" : styles.none} ${updateIssueLoader ? styles.button__loading : ""}`}
-                  onClick={() => handleUpdate(id)}
-                >
-                  <span className={updateIssueLoader ? styles.hidden : ""}>Update</span>
+                <button className={`${styles.issue__button} ${edit === id ? "" : styles.none}`} onClick={() => handleUpdate(id)}>
+                  Update
                 </button>
               </span>
             </li>

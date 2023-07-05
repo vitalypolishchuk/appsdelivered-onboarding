@@ -1,6 +1,8 @@
-import styles from "../styles/IssuesAPI.module.css";
+import styles from "./IssuesAPI.module.css";
 import React, { useEffect, useState } from "react";
 import { requestJira } from "@forge/bridge";
+import { store } from "./store/store";
+import { storeType } from "./store/storeTypes";
 
 type newIssueType = {
   fields: {
@@ -13,13 +15,6 @@ type newIssueType = {
       name: string;
     };
   };
-};
-
-type issueType = {
-  summary: string;
-  description: string;
-  iconUrl: string;
-  key: string;
 };
 
 const newIssue: newIssueType = {
@@ -36,14 +31,16 @@ const newIssue: newIssueType = {
 };
 
 const IssuesAPI = () => {
-  const [issues, setIssues] = useState<null | issueType[]>(null);
+  const { issues, setIssues } = store((state: unknown) => state as storeType);
+  const [recievedIssuesFromAPI, setRecievedIssuesFromAPI] = useState(false);
+
   const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("Bug");
 
-  const [createIssueLoader, setCreateIssueLoader] = useState(false);
+  const [createIssueLoader, setCreateIssueLoader] = useState(true);
 
-  const getIssues = async () => {
+  const getIssuesFromAPI = async () => {
     try {
       const response = await requestJira(`/rest/api/2/search?`);
       const { issues } = await response.json();
@@ -61,10 +58,20 @@ const IssuesAPI = () => {
     }
   };
 
+  useEffect(() => {
+    if (!recievedIssuesFromAPI) {
+      const getIssues = async () => {
+        await getIssuesFromAPI();
+        setRecievedIssuesFromAPI(true);
+        setCreateIssueLoader(false);
+      };
+      getIssues();
+    }
+  }, [issues]);
+
   const onSubmitIssue = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (createIssueLoader) return;
-    setCreateIssueLoader(true);
 
     newIssue.fields.summary = summary;
     newIssue.fields.description = description;
@@ -74,7 +81,7 @@ const IssuesAPI = () => {
       const metaResponse = await requestJira(`/rest/api/2/issue/createmeta`);
       const metadata = await metaResponse.json();
       newIssue.fields.project.key = metadata.projects[0].key;
-      const response = await requestJira(`/rest/api/2/issue`, {
+      await requestJira(`/rest/api/2/issue`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -82,19 +89,14 @@ const IssuesAPI = () => {
         },
         body: JSON.stringify(newIssue),
       });
-      getIssues();
+      getIssuesFromAPI();
     } catch (err) {
       console.error(err);
     } finally {
       setSummary("");
       setDescription("");
-      setCreateIssueLoader(false);
     }
   };
-
-  useEffect(() => {
-    getIssues();
-  }, []);
 
   return (
     <>
