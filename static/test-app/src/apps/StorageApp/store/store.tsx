@@ -1,21 +1,21 @@
 import { create } from "zustand";
-import { storeType, issueType } from "./storeTypes";
+import { issueStoreType, issueType, apiStoreType, openAIDataType } from "./storeTypes";
 
-const store = create((set) => ({
+export const issuesStore = create((set) => ({
   issues: [],
   setIssues: (issues: issueType) => {
-    set((state: storeType) => {
+    set((state: issueStoreType) => {
       return { ...state, issues: issues };
     });
   },
   deleteIssue: (id: string) => {
-    set((state: storeType) => {
+    set((state: issueStoreType) => {
       const updatedIssues = state.issues.filter((issue) => issue.id !== id);
       return { ...state, issues: updatedIssues };
     });
   },
   updateIssue: (updatedIssue: issueType) => {
-    set((state: storeType) => {
+    set((state: issueStoreType) => {
       const updatedIssues = state.issues.map((issue: issueType) => {
         if (updatedIssue.id === issue.id) return updatedIssue;
         return issue;
@@ -24,11 +24,21 @@ const store = create((set) => ({
     });
   },
   addIssue: (issue: issueType) => {
-    set((state: storeType) => {
+    set((state: issueStoreType) => {
       const updatedIssues = [...state.issues, issue];
       return { ...state, issues: updatedIssues };
     });
   },
 }));
 
-export default store;
+export const apiStore = create((set) => ({
+  openAIData: {
+    openaiKey: "",
+    organizationID: "",
+  },
+  setOpenAIData: (openAIData: openAIDataType) => {
+    set((state: apiStoreType) => {
+      return { ...state, openAIData };
+    });
+  },
+}));

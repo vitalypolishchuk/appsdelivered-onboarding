@@ -35,6 +35,10 @@
   filter: brightness(97%);
 }
 
+.issue__button:disabled {
+  filter: none;
+}
+
 .button__loading::after {
   content: "";
   position: absolute;
@@ -67,13 +71,14 @@
   padding: 0.5rem;
   border: 1px solid rgba(0, 0, 0, 0.1);
   font-size: 0.75rem;
+  margin-right: 1rem;
 }
 
 .newIssue__form {
   padding: 1rem;
   font-size: 0.75rem;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  width: 430px;
+  width: 550px;
   border-radius: 10px;
 }
 
@@ -85,11 +90,12 @@
 .input__container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   margin-bottom: 1rem;
 }
 
 .issue__label {
+  width: 90px;
   margin-right: 1rem;
 }
 

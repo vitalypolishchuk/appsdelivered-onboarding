@@ -19,6 +19,10 @@ permissions:
   content:
     styles:
       - unsafe-inline
+  external:
+    fetch:
+      backend:
+        - "https://api.openai.com"
   scopes:
     - storage:app
     - read:jira-work
