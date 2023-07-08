@@ -21,10 +21,20 @@ function App() {
   return (
     <>
       <div className={styles.buttons}>
-        <button className={`${styles.button} ${isShowIssueAPIApp ? styles.button__selected : ""}`} onClick={handleShowIssueAPI}>
+        <button
+          className={`${styles.button} ${
+            isShowIssueAPIApp ? styles.button__selected : ""
+          }`}
+          onClick={handleShowIssueAPI}
+        >
           IssueAPI app
         </button>
-        <button className={`${styles.button} ${isShowStorageApp ? styles.button__selected : ""}`} onClick={handleShowStorage}>
+        <button
+          className={`${styles.button} ${
+            isShowStorageApp ? styles.button__selected : ""
+          }`}
+          onClick={handleShowStorage}
+        >
           Storage App
         </button>
       </div>
