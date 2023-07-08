@@ -57,17 +57,13 @@ resolver.define("generateSummary", async ({ payload }) => {
   };
 
   try {
-    const response = await openai.axios.post(openai.basePath + url, data, { headers: headers });
+    const response = await openai.axios.post(openai.basePath + url, data, {
+      headers: headers,
+    });
     return response.data.choices[0].message.content;
   } catch (err) {
-    console.log(err);
+    return err.message;
   }
-});
-
-resolver.define("getText", async (req) => {
-  console.log(req);
-
-  return "Hello world";
 });
 
 export const handler = resolver.getDefinitions();
