@@ -1,12 +1,7 @@
 import styles from "./styles/Storage.module.css";
 import React, { useEffect, useState } from "react";
 import { invoke } from "@forge/bridge";
-import {
-  issueType,
-  issueStoreType,
-  apiStoreType,
-  openAIDataType,
-} from "./store/storeTypes";
+import { issueType, issueStoreType, apiStoreType, openAIDataType } from "./store/storeTypes";
 import { issuesStore, apiStore } from "./store/store";
 import GetApiKey from "./GetApiKey";
 
@@ -14,16 +9,12 @@ const Storage = () => {
   const { issues, setIssues, deleteIssue, updateIssue, addIssue } = issuesStore(
     (state: unknown) => state as issueStoreType
   );
-  const { openAIData, setOpenAIData } = apiStore(
-    (state: unknown) => state as apiStoreType
-  );
+  const { openAIData, setOpenAIData } = apiStore((state: unknown) => state as apiStoreType);
 
-  const [recievedIssuesFromStorage, setRecievedIssuesFromStorage] =
-    useState(false);
+  const [recievedIssuesFromStorage, setRecievedIssuesFromStorage] = useState(false);
   const [openaiKeyMenu, setOpenaiKeyMenu] = useState(false);
 
-  const [recievedAIDataFromStorage, setRecievedAIDataFromStorage] =
-    useState(false);
+  const [recievedAIDataFromStorage, setRecievedAIDataFromStorage] = useState(false);
 
   const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
@@ -200,9 +191,7 @@ const Storage = () => {
               type="button"
               disabled={!isGenerateEnabled}
             >
-              <span className={generateSummaryLoader ? styles.hidden : ""}>
-                Generate
-              </span>
+              <span className={generateSummaryLoader ? styles.hidden : ""}>Generate</span>
             </button>
           </div>
           <div className={styles.input__container}>
@@ -218,11 +207,7 @@ const Storage = () => {
               onChange={(e) => setDescription(e.target.value)}
               required
             />
-            <button
-              className={styles.issue__button}
-              type="button"
-              onClick={handleEditOpenAIData}
-            >
+            <button className={styles.issue__button} type="button" onClick={handleEditOpenAIData}>
               OpenAI Data
             </button>
           </div>
@@ -244,89 +229,64 @@ const Storage = () => {
               createIssueLoader ? styles.button__loading : ""
             }`}
           >
-            <span className={createIssueLoader ? styles.hidden : ""}>
-              Create Issue
-            </span>
+            <span className={createIssueLoader ? styles.hidden : ""}>Create Issue</span>
           </button>
         </form>
         <ul>
-          {[...issues]
-            .reverse()
-            .map(({ summary, description, type, id }: issueType) => {
-              return (
-                <li className={styles.issue} key={id}>
-                  <span
-                    className={`${styles.issue__info} ${
-                      edit === id ? styles.none : ""
-                    }`}
+          {[...issues].reverse().map(({ summary, description, type, id }: issueType) => {
+            return (
+              <li className={styles.issue} key={id}>
+                <span className={`${styles.issue__info} ${edit === id ? styles.none : ""}`}>
+                  <p className={styles.issue__text}>Summary: {summary}</p>
+                  <p className={styles.issue__text}>Description: {description}</p>
+                  <p className={styles.issue__text}>Type: {type}</p>
+                </span>
+                <span className={`${styles.issue__inputs} ${edit === id ? "" : styles.none}`}>
+                  <input
+                    className={styles.issue__input}
+                    type="text"
+                    value={updatedSummary}
+                    onChange={(e) => setUpdatedSummary(e.target.value)}
+                  />
+                  <input
+                    className={styles.issue__input}
+                    type="text"
+                    value={updatedDescription}
+                    onChange={(e) => setUpdatedDescription(e.target.value)}
+                  />
+                  <select
+                    className={styles.select__issue}
+                    value={updatedType}
+                    onChange={(e) => setUpdatedType(e.target.value)}
                   >
-                    <p className={styles.issue__text}>Summary: {summary}</p>
-                    <p className={styles.issue__text}>
-                      Description: {description}
-                    </p>
-                    <p className={styles.issue__text}>Type: {type}</p>
-                  </span>
-                  <span
-                    className={`${styles.issue__inputs} ${
-                      edit === id ? "" : styles.none
-                    }`}
+                    <option value="Bug">Bug</option>
+                    <option value="Epic">Epic</option>
+                    <option value="Story">Story</option>
+                    <option value="Task">Task</option>
+                  </select>
+                </span>
+                <span className={`${edit === id ? styles.none : ""} ${styles.issue__buttons}`}>
+                  <button
+                    className={styles.issue__button}
+                    onClick={() => handleEdit({ id, summary, description, type })}
                   >
-                    <input
-                      className={styles.issue__input}
-                      type="text"
-                      value={updatedSummary}
-                      onChange={(e) => setUpdatedSummary(e.target.value)}
-                    />
-                    <input
-                      className={styles.issue__input}
-                      type="text"
-                      value={updatedDescription}
-                      onChange={(e) => setUpdatedDescription(e.target.value)}
-                    />
-                    <select
-                      className={styles.select__issue}
-                      value={updatedType}
-                      onChange={(e) => setUpdatedType(e.target.value)}
-                    >
-                      <option value="Bug">Bug</option>
-                      <option value="Epic">Epic</option>
-                      <option value="Story">Story</option>
-                      <option value="Task">Task</option>
-                    </select>
-                  </span>
-                  <span
-                    className={`${edit === id ? styles.none : ""} ${
-                      styles.issue__buttons
-                    }`}
+                    Edit
+                  </button>
+                  <button className={styles.issue__button} onClick={() => handleDelete(id)}>
+                    Delete
+                  </button>
+                </span>
+                <span>
+                  <button
+                    className={`${styles.issue__button} ${edit === id ? "" : styles.none}`}
+                    onClick={() => handleUpdate(id)}
                   >
-                    <button
-                      className={styles.issue__button}
-                      onClick={() =>
-                        handleEdit({ id, summary, description, type })
-                      }
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className={styles.issue__button}
-                      onClick={() => handleDelete(id)}
-                    >
-                      Delete
-                    </button>
-                  </span>
-                  <span>
-                    <button
-                      className={`${styles.issue__button} ${
-                        edit === id ? "" : styles.none
-                      }`}
-                      onClick={() => handleUpdate(id)}
-                    >
-                      Update
-                    </button>
-                  </span>
-                </li>
-              );
-            })}
+                    Update
+                  </button>
+                </span>
+              </li>
+            );
+          })}
         </ul>
       </section>
       {openaiKeyMenu && (

@@ -51,11 +51,7 @@ const GetApiKey = ({
       <form onSubmit={handleSubmit} className={styles.container}>
         <h4 className={styles.header}>
           Provide OpenAI Info (
-          <a
-            href="https://platform.openai.com/"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href="https://platform.openai.com/" target="_blank" rel="noreferrer">
             Get Info
           </a>
           )
@@ -83,18 +79,10 @@ const GetApiKey = ({
           />
         </div>
         <div className={styles.button__container}>
-          <button
-            onClick={handleCloseMenu}
-            className={styles.button}
-            type="button"
-          >
+          <button onClick={handleCloseMenu} className={styles.button} type="button">
             Cancel
           </button>
-          <button
-            className={styles.button}
-            disabled={!isSubmitEnabled}
-            type="submit"
-          >
+          <button className={styles.button} disabled={!isSubmitEnabled} type="submit">
             Save
           </button>
         </div>

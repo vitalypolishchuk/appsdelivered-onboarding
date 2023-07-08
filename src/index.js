@@ -42,7 +42,10 @@ resolver.define("generateSummary", async ({ payload }) => {
 
   const openai = new OpenAIApi(configuration);
 
-  let userTemplate = `Summarize the following description for a jira issue. Type of issue: ${issueType}. The summary should be concise and self-explanatory. Here is the description: ${description}`;
+  let userTemplate = ```
+  Summarize the following description for a jira issue. Type of issue: ${issueType}. 
+  The summary should be concise and self-explanatory. Here is the description: ${description}
+  ```;
 
   const data = {
     model: "gpt-3.5-turbo",
