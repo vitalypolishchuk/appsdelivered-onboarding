@@ -1,5 +1,10 @@
 import { create } from "zustand";
-import { issueStoreType, issueType, apiStoreType, openAIDataType } from "./storeTypes";
+import {
+  issueStoreType,
+  issueType,
+  apiStoreType,
+  openAIDataType,
+} from "./storeTypes";
 
 export const issuesStore = create((set) => ({
   issues: [],

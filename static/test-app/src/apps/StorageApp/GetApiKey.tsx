@@ -11,7 +11,13 @@ type propsType = {
   setOrganizationIDInput: (orgID: string) => void;
 };
 
-const GetApiKey = ({ setOpenaiKeyMenu, apiKeyInput, setApiKeyInput, organizationIDInput, setOrganizationIDInput }: propsType) => {
+const GetApiKey = ({
+  setOpenaiKeyMenu,
+  apiKeyInput,
+  setApiKeyInput,
+  organizationIDInput,
+  setOrganizationIDInput,
+}: propsType) => {
   const { setOpenAIData } = apiStore((state: unknown) => state as apiStoreType);
   const [isSubmitEnabled, setIsSubmitEnabled] = useState(false);
 
@@ -26,7 +32,10 @@ const GetApiKey = ({ setOpenaiKeyMenu, apiKeyInput, setApiKeyInput, organization
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setOpenAIData({ openaiKey: apiKeyInput, organizationID: organizationIDInput });
+    setOpenAIData({
+      openaiKey: apiKeyInput,
+      organizationID: organizationIDInput,
+    });
 
     setOpenaiKeyMenu(false);
     setApiKeyInput("");
@@ -42,7 +51,11 @@ const GetApiKey = ({ setOpenaiKeyMenu, apiKeyInput, setApiKeyInput, organization
       <form onSubmit={handleSubmit} className={styles.container}>
         <h4 className={styles.header}>
           Provide OpenAI Info (
-          <a href="https://platform.openai.com/" target="_blank" rel="noreferrer">
+          <a
+            href="https://platform.openai.com/"
+            target="_blank"
+            rel="noreferrer"
+          >
             Get Info
           </a>
           )
@@ -70,10 +83,18 @@ const GetApiKey = ({ setOpenaiKeyMenu, apiKeyInput, setApiKeyInput, organization
           />
         </div>
         <div className={styles.button__container}>
-          <button onClick={handleCloseMenu} className={styles.button} type="button">
+          <button
+            onClick={handleCloseMenu}
+            className={styles.button}
+            type="button"
+          >
             Cancel
           </button>
-          <button className={styles.button} disabled={!isSubmitEnabled} type="submit">
+          <button
+            className={styles.button}
+            disabled={!isSubmitEnabled}
+            type="submit"
+          >
             Save
           </button>
         </div>

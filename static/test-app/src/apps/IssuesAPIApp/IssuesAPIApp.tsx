@@ -128,15 +128,26 @@ const IssuesAPI = () => {
         </div>
         <div className={styles.input__container}>
           <label className={styles.label}>Type: </label>
-          <select className={styles.select} value={type} onChange={(e) => setType(e.target.value)}>
+          <select
+            className={styles.select}
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+          >
             <option value="Bug">Bug</option>
             <option value="Epic">Epic</option>
             <option value="Story">Story</option>
             <option value="Task">Task</option>
           </select>
         </div>
-        <button className={`${styles.issue__button} ${styles.button__add}  ${createIssueLoader ? styles.button__loading : ""}`} type="submit">
-          <span className={createIssueLoader ? styles.hidden : ""}>Create Issue</span>
+        <button
+          className={`${styles.issue__button} ${styles.button__add}  ${
+            createIssueLoader ? styles.button__loading : ""
+          }`}
+          type="submit"
+        >
+          <span className={createIssueLoader ? styles.hidden : ""}>
+            Create Issue
+          </span>
         </button>
       </form>
       {issues !== null && !!issues.length && (
